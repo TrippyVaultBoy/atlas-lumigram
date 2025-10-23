@@ -68,31 +68,31 @@ export const profileFeed = [
   {
     image: "https://placedog.net/400x400?id=11",
     caption: "This is a caption 6",
-    id: "6",
+    id: "1",
     createdBy: "atlas-lumi",
   },
   {
     image: "https://placedog.net/400x400?id=12",
     caption: "This is a caption 7",
-    id: "7",
+    id: "2",
     createdBy: "atlas-lumi",
   },
   {
     image: "https://placedog.net/400x400?id=13",
     caption: "This is a caption 8",
-    id: "8",
+    id: "3",
     createdBy: "atlas-lumi",
   },
   {
     image: "https://placedog.net/400x400?id=14",
     caption: "This is a caption 9",
-    id: "9",
+    id: "4",
     createdBy: "atlas-lumi",
   },
   {
     image: "https://placedog.net/400x400?id=15",
     caption: "This is a caption 10",
-    id: "10",
+    id: "5",
     createdBy: "atlas-lumi",
   },
   {
