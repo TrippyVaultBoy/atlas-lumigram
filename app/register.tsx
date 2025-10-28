@@ -1,12 +1,24 @@
+import { useAuth } from "@/components/authProvider";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View, StyleSheet, TextInput } from "react-native";
 
 export default function Page() {
+    const auth = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
+   
+    async function register() {
+      try {
+        await auth.register(email, password);
+        router.replace("/(tabs)");
+      } catch (err) {
+        alert("Unable to create account");
+      }
+    }
+
     return (
         <View style={styles.container}>
             <Image
@@ -37,7 +49,7 @@ export default function Page() {
 
             <Pressable
                 style={styles.button}
-                onPress={() => {router.replace("/(tabs)")}}
+                onPress={() => {register()}}
             >
                 <Text style={styles.buttonText}>Create Account</Text>
             </Pressable>

@@ -1,4 +1,4 @@
-import { StyleSheet, Platform, View, Alert } from "react-native";
+import { StyleSheet, Platform, View, Alert, Text } from "react-native";
 import { Image } from "expo-image";
 
 // import { HelloWave } from "@/components/HelloWave";
@@ -10,8 +10,11 @@ import { homeFeed } from "@/placeholder"
 import { FlashList } from "@shopify/flash-list";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-worklets";
+import { useAuth } from "@/components/authProvider";
 
 export default function HomeScreen() {
+	const auth = useAuth();
+	
 	const showAlert = () => {
 		Alert.alert("Post added to favorites!");
 	};
@@ -33,7 +36,7 @@ export default function HomeScreen() {
 
 	return (
 		<View style={styles.container}>
-
+			<Text style={{fontWeight: "bold", textAlign: "center", padding: 8}}>Welcome {auth.user?.email}!</Text>
 			<FlashList
 				data={homeFeed}
 				renderItem={({ item }) => (

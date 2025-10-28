@@ -1,12 +1,24 @@
+import { useAuth } from "@/components/authProvider";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View, StyleSheet, TextInput } from "react-native";
 
 export default function Page() {
+    const auth = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
+    
+    async function login() {
+		try {
+			await auth.login(email, password);
+			router.replace("/(tabs)");
+		} catch (err) {
+			alert("Email or password is incorrect");
+		}
+    }
+    
     return (
         <View style={styles.loginContainer}>
             <Image
@@ -37,7 +49,7 @@ export default function Page() {
 
             <Pressable
                 style={styles.button}
-                onPress={() => {router.replace("/(tabs)")}}
+                onPress={() => login()}
             >
                 <Text style={styles.buttonText}>Sign In</Text>
             </Pressable>
