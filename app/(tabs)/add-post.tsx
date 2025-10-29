@@ -3,11 +3,33 @@ import { SymbolView } from "expo-symbols";
 import { Image } from "expo-image";
 import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useState } from "react";
+import storage from "@/lib/storage";
+import firestore from "@/lib/firestore";
+import { useAuth } from "@/components/authProvider";
+import { router } from "expo-router";
 
 export default function Page() {
+    const auth = useAuth();
     const {image, openImagePicker, reset} = useImagePicker();
     const [caption, setCaption] = useState("");
     
+    async function save() {
+        if (!image) return;
+        const name = image?.split("/").pop() as string;
+        const {downloadUrl, metadata} = await storage.upload(image, name);
+        console.log(downloadUrl);
+
+        firestore.addPost({
+            caption,
+            image: downloadUrl,
+            createdAt: new Date(),
+            createdBy: auth.user?.uid!,
+        });
+
+        alert("Post added!");
+        router.replace("/(tabs)");
+    }
+
     return (
         <View style={styles.container}>
             <Image
@@ -33,7 +55,7 @@ export default function Page() {
                             placeholder="Add a caption"
                             placeholderTextColor="#00d6ad"
                         />
-                        <Pressable style={styles.savePhotoButton} onPress={() => alert("Post added!")}>
+                        <Pressable style={styles.savePhotoButton} onPress={save}>
                             <View style={styles.buttonContent}>
                                 <Text style={styles.buttonText}>Save</Text>
                             </View>
