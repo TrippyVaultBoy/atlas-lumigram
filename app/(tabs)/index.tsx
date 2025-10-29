@@ -11,9 +11,31 @@ import { FlashList } from "@shopify/flash-list";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-worklets";
 import { useAuth } from "@/components/authProvider";
+import firestore, {PostWithId} from "@/lib/firestore";
+import { useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function HomeScreen() {
+	const isFocused = useIsFocused();
 	const auth = useAuth();
+	const [posts, setPosts] = useState<PostWithId[]>([]);
+	const [lastDoc, setLastDoc] = useState<any>(null);
+	const pageSize = 2;
+
+	async function fetchAllPosts() {
+		if (lastDoc === "end") return;
+		
+		let result = await firestore.allPosts(pageSize, lastDoc);
+		if (!result) return;
+		
+		if (result.allPosts.length === 0) {
+			setLastDoc("end");
+			return;
+		}
+
+		setPosts(prev => [...prev, ...result.allPosts]);
+		setLastDoc(result.lastDoc);
+	}
 	
 	const showAlert = () => {
 		Alert.alert("Post added to favorites!");
@@ -34,11 +56,16 @@ export default function HomeScreen() {
 			}
 		});
 
+	useEffect(() => {
+		fetchAllPosts();
+	}, [isFocused]);
+
 	return (
 		<View style={styles.container}>
 			<Text style={{fontWeight: "bold", textAlign: "center", padding: 8}}>Welcome {auth.user?.email}!</Text>
 			<FlashList
-				data={homeFeed}
+				data={posts}
+				keyExtractor={(item) => item.id}
 				renderItem={({ item }) => (
 					<GestureDetector gesture={Gesture.Exclusive(doubleTap, longPressGesture)}>
 						<Image
@@ -49,7 +76,10 @@ export default function HomeScreen() {
 						/>
 					</GestureDetector>
 				)}
-				keyExtractor={(item) => item.id}
+				onEndReached={() => {
+					fetchAllPosts();
+				}}
+				onEndReachedThreshold={0.5}
 			/>
 		</View>
 	);
