@@ -17,7 +17,6 @@ export default function Page() {
         if (!image) return;
         const name = image?.split("/").pop() as string;
         const {downloadUrl, metadata} = await storage.upload(image, name);
-        console.log(downloadUrl);
 
         firestore.addPost({
             caption,
